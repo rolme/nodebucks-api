@@ -1,0 +1,16 @@
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Owner</th>
+    <th>Duration</th>
+  </tr>
+  <% nodes.each do |node| %>
+    <tr>
+      <td style="padding: 15px;"><%= link_to (node.id + 10000), "https://nodebuckshq.com/nodes/#{node.slug}", :target => "_blank" %></td>
+      <td style="padding: 15px;"><%= node.user.email %></td>
+      <td align="center" style="padding: 15px;">
+        <%= node.online_at.present? && node.status == 'online' ? distance_of_time_in_words_to_now(node.online_at) : '0 hours' %>
+      </td>
+    </tr>
+  <% end %>
+</table>

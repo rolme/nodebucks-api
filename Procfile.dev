@@ -1,0 +1,2 @@
+web: bundle exec rails s -b 'ssl://localhost:8081?key=./.ssl/localhost.key&cert=./.ssl/localhost.crt'
+worker: bundle exec sidekiq -q default

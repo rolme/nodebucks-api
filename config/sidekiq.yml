@@ -1,0 +1,43 @@
+---
+:concurrency: 5
+staging:
+  :concurrency: 10
+production:
+  :concurrency: 20
+:queues:
+  - [critical, 2]
+  - default
+  - low
+  - mailers
+:schedule:
+  crypto_scraper_worker:
+    cron: '53 */4 * * *' # Run every 6 hour starting at minute 53.
+    class: CryptoScraperWorker
+
+  node_pricer_worker:
+    cron: '*/10 * * * *' # Run every 10 mins.
+    class: NodePricerWorker
+
+  node_rewarder_worker:
+    cron: '16 */6 * * *' # Run every 6 hours at minute 16.
+    class: NodeRewarderWorker
+
+  node_daily_ticker_worker:
+    cron: '3 1 * * *' # Run every day at 1:03 AM
+    class: NodeDailyTickerWorker
+
+  site_map_worker:
+    cron: '0 2 * * *' # Run every day at 2:00 AM
+    class: SiteMapWorker
+
+  # node_offline_notifier_worker:
+  #   cron: '5-59/10 * * * *' # Run every 10 mins starting at 5 mins after hour
+  #   class: NodeOfflineNotifierWorker
+
+  masternodes_report_worker:
+    cron: '0 8 * * *' # Run every day at 8:00 AM
+    class: MasternodesReportWorker
+
+  crypto_price_history_worker:
+    cron: '0 * * * *' # Run every hour
+    class: CryptoPriceHistoryWorker
