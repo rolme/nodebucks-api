@@ -37,6 +37,14 @@ class User < ApplicationRecord
     "#{first} #{last}"
   end
 
+  def enable!
+    update_attribute(:enabled, true)
+  end
+
+  def disable!
+    update_attribute(:enabled, false)
+  end
+
   def reset!
     self.reset_token = SecureRandom.urlsafe_base64
     self.reset_at = DateTime.current
@@ -92,6 +100,7 @@ class User < ApplicationRecord
       filtered_nodes = nodes.select{ |n| n.crypto_id == crypto.id && ['online', 'new'].include?(n.status) }
       if account.nil?
         {
+          btc: 0.0,
           fee: crypto.percentage_conversion_fee,
           has_nodes: false,
           name: crypto.name,
@@ -100,18 +109,23 @@ class User < ApplicationRecord
           usd: 0.0,
           value: 0.0,
           wallet: nil,
+          withdrawable: crypto.withdrawable?
         }
       else
         crypto_pricer = CryptoPricer.new(account.crypto)
+        btc = crypto_pricer.to_btc(account.balance, 'sell')
+        usd = crypto_pricer.to_usdt(account.balance, 'sell')
         {
+          btc: btc,
           fee: crypto.percentage_conversion_fee,
           has_nodes: filtered_nodes.present?,
           name: account.name,
           slug: crypto.slug,
           symbol: account.symbol,
-          usd: crypto_pricer.to_usdt(account.balance, 'sell'),
+          usd: usd,
           value: account.balance,
           wallet: account.wallet,
+          withdrawable: crypto.withdrawable?
         }
       end
     end
@@ -125,12 +139,14 @@ class User < ApplicationRecord
     btc = 0.0
     usd = 0.0
     accounts.each do |account|
+      next unless account.crypto.withdrawable?
+
       crypto_pricer = CryptoPricer.new(account.crypto)
       btc += crypto_pricer.to_btc(account.balance, 'sell')
       usd += crypto_pricer.to_usdt(account.balance, 'sell')
     end
     usd += affiliate_balance
-    btc += Utils.usd_to_btc(affiliate_balance)
+    btc += Utils.usd_to_btc(affiliate_balance) # TODO: Should this have a 3% conversion fee?
     { btc: btc, usd: usd }
   end
 
@@ -177,6 +193,7 @@ class User < ApplicationRecord
       country: country,
       createdAt: created_at.to_formatted_s(:db),
       email: email,
+      enabled: enabled,
       enabled2FA: two_fa_secret.present?,
       first: first,
       fullName: full_name,

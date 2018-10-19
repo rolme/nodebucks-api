@@ -16,6 +16,16 @@ class Utils
   end
 
   def self.average(array)
+    return 0 if array.blank?
+
     array.reduce(:+) / array.size
+  end
+
+  def self.download(id, url)
+    file = Tempfile.new(["#{id}", '.jpeg'])
+    stringIo = open(url)
+    file.binmode
+    file.write stringIo.read
+    file
   end
 end

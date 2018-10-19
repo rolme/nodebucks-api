@@ -49,7 +49,7 @@ protected
   end
 
   def withdrawal_params
-    params.require(:withdrawal).permit(:wallet, :password)
+    params.require(:withdrawal).permit(:target, :payment_type, :password)
   end
 
   def withdrawal

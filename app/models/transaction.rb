@@ -1,9 +1,11 @@
 class Transaction < ApplicationRecord
   include Sluggable
 
-  belongs_to :account
+  belongs_to :account, optional: true
   belongs_to :reward, optional: true
   belongs_to :withdrawal, optional: true
+
+  validate :reference_exist, on: :create
 
   scope :pending, -> { where(status: :pending) }
   scope :processed, -> { where(status: :processed) }
@@ -36,9 +38,6 @@ class Transaction < ApplicationRecord
       reward = Reward.find_by(id: reward_id)
       self.cached_crypto_name = reward&.name
       self.cached_crypto_symbol = reward&.symbol
-    elsif withdrawal_id.present?
-      self.cached_crypto_name = 'Bitcoin'
-      self.cached_crypto_symbol = 'btc'
     end
 
     save! if persist
@@ -53,6 +52,12 @@ class Transaction < ApplicationRecord
   end
 
 private
+  def reference_exist
+    if account_id.nil? && reward_id.nil? && withdrawal_id.nil?
+      errors.add(:account_id, "Reference must exist for an account, reward, or withdrawal.")
+    end
+  end
+
 
   def reverse_deposit!
     Transaction.transaction do
@@ -70,14 +75,14 @@ private
   def reverse_withdraw!
     Transaction.transaction do
       txn = nil
-      if notes.include?("Affiliate reward withdrawal")
-        txn = Transaction.create(
+      if notes.include?("Affiliate reward withdrawal") && !!withdrawal_id
+        txn = withdrawal.transactions.create(
           amount: amount,
           withdrawal_id: withdrawal_id,
           txn_type: 'deposit',
           notes: "Reverse txn #{id}: #{notes}"
         )
-        account.user.update_attribute(:affiliate_balance, account.user.affiliate_balance + amount)
+        withdrawal.user.update_attribute(:affiliate_balance, withdrawal.user.affiliate_balance + amount)
       else
         txn = account.transactions.create(
           amount: amount,

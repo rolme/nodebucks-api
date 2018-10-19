@@ -5,6 +5,7 @@ json.fullName user.full_name
 json.last user.last
 json.slug user.slug
 json.balances user.balances.each do |balance|
+  json.btc balance[:btc]
   json.fee balance[:fee]
   json.hasNodes balance[:has_nodes]
   json.name balance[:name]

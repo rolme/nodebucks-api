@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :authenticate_request, only: [:balance, :update, :destroy, :referrer, :password_confirmation, :verification_image]
-  before_action :authenticate_admin_request, only: [:index, :show, :impersonate]
+  before_action :authenticate_admin_request, only: [:disable, :enable, :index, :impersonate, :show]
   before_action :find_user, only: [:update, :profile]
 
   def callback
@@ -20,8 +20,7 @@ class UsersController < ApplicationController
     end
 
     if @user.present?
-      sm = StorageManager.new
-      avatar = sm.store_url(@user, user_params[:avatar])
+      avatar = Utils.download(@user.id, params[:user][:avatar])
       @user.update_attribute(:avatar, avatar)
       render json: { status: :ok, token: generate_token, message: 'User logged in.' }
     else
@@ -29,8 +28,7 @@ class UsersController < ApplicationController
       @user.set_upline(referrer_params[:referrer_affiliate_key])
 
       if @user.save
-        sm = StorageManager.new
-        avatar = sm.store_url(@user, user_params[:avatar])
+        avatar = Utils.download(@user.id, params[:user][:avatar])
         @user.update_attribute(:avatar, avatar)
         render json: { status: :ok, token: generate_token, message: 'User account created.' }
         if ENV['RAILS_ENV'] == 'development'
@@ -229,6 +227,18 @@ class UsersController < ApplicationController
     render json: { status: :ok, token: generate_token }
   end
 
+  def enable
+    @user = User.find_by(slug: params[:user_slug])
+    @user.enable!
+    render json: { status: :ok, message: 'User account successfully enabled.', token: generate_token }
+  end
+
+  def disable
+    @user = User.find_by(slug: params[:user_slug])
+    @user.disable!
+    render json: { status: :ok, message: 'User account successfully disabled.', token: generate_token }
+  end
+
   def enable_2fa
     @user = User.find_by(slug: params[:user_slug])
     if(@user.update(two_fa_secret: params[:user][:two_fa_secret]))
@@ -323,6 +333,7 @@ private
       country: @user.country,
       createdAt: @user.created_at.to_formatted_s(:db),
       email: @user.email,
+      enabled: @user.enabled,
       enabled2FA: @user.two_fa_secret.present?,
       first: @user.first,
       fullName: @user.full_name,

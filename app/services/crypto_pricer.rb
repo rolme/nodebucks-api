@@ -44,7 +44,12 @@ class CryptoPricer
     else amount = 1
     end
 
-    CryptoPrice.find_by(crypto_id: crypto.id, amount: amount, price_type: type).btc * total
+    btc = CryptoPrice.find_by(crypto_id: crypto.id, amount: amount, price_type: type).btc * total
+    if crypto.symbol != 'btc'
+      btc - (btc * crypto.percentage_conversion_fee)
+    else
+      btc
+    end
   end
 
   def to_usdt(total, type='buy')
@@ -64,7 +69,12 @@ class CryptoPricer
     else amount = 1
     end
 
-    CryptoPrice.find_by(crypto_id: crypto.id, amount: amount, price_type: type).usdt * total
+    usdt = CryptoPrice.find_by(crypto_id: crypto.id, amount: amount, price_type: type).usdt * total
+    if crypto.symbol != 'btc'
+      usdt - (usdt * (crypto.percentage_conversion_fee * 2))
+    else
+      usdt - (usdt * crypto.percentage_conversion_fee)
+    end
   end
 
   # Privatish

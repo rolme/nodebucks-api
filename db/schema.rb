@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_11_023341) do
+ActiveRecord::Schema.define(version: 2018_10_16_235616) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -115,6 +115,8 @@ ActiveRecord::Schema.define(version: 2018_10_11_023341) do
     t.decimal "percentage_decommission_fee", default: "0.0"
     t.decimal "node_sell_price"
     t.string "purchasable_status", default: "Unavailable"
+    t.integer "first_reward_days", default: 0
+    t.decimal "node_sell_price_btc", default: "0.0"
   end
 
   create_table "events", force: :cascade do |t|
@@ -173,6 +175,9 @@ ActiveRecord::Schema.define(version: 2018_10_11_023341) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.datetime "online_mail_sent_at"
+    t.decimal "nb_buy_amount", default: "0.0"
+    t.decimal "nb_sell_amount", default: "0.0"
+    t.decimal "sell_price_btc", default: "0.0"
     t.index ["account_id"], name: "index_nodes_on_account_id"
     t.index ["crypto_id"], name: "index_nodes_on_crypto_id"
     t.index ["slug"], name: "index_nodes_on_slug"
@@ -232,6 +237,8 @@ ActiveRecord::Schema.define(version: 2018_10_11_023341) do
     t.integer "last_modified_by_admin_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "usd_value"
+    t.decimal "btc_value"
     t.index ["account_id"], name: "index_transactions_on_account_id"
     t.index ["reward_id"], name: "index_transactions_on_reward_id"
     t.index ["withdrawal_id"], name: "index_transactions_on_withdrawal_id"
@@ -272,6 +279,7 @@ ActiveRecord::Schema.define(version: 2018_10_11_023341) do
     t.string "verification_status", default: "none"
     t.string "verification_image"
     t.boolean "reward_notification_on", default: true
+    t.boolean "enabled", default: false
     t.index ["affiliate_key"], name: "index_users_on_affiliate_key", unique: true
   end
 
@@ -288,6 +296,8 @@ ActiveRecord::Schema.define(version: 2018_10_11_023341) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "affiliate_balance", default: "0.0"
+    t.string "target"
+    t.string "payment_type"
     t.index ["user_id"], name: "index_withdrawals_on_user_id"
   end
 

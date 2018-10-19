@@ -27,6 +27,11 @@ class Crypto < ApplicationRecord
     self.slug = name.parameterize if slug.nil? || force
   end
 
+  def withdrawable?
+    status != 'inactive' &&
+    purchasable_status != 'Unavailable'
+  end
+
   def yearly_roi
     @_yearly_roi ||= {
       days: YEARLY,

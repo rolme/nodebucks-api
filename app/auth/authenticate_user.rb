@@ -18,6 +18,7 @@ class AuthenticateUser
       country: user.country,
       createdAt: user.created_at.to_formatted_s(:db),
       email: user.email,
+      enabled: user.enabled,
       enabled2FA: user.two_fa_secret.present?,
       first: user.first,
       fullName: user.full_name,

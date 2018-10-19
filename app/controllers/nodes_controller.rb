@@ -163,6 +163,8 @@ protected
   def node_user_params
     params.require(:node).permit(
       :currency,
+      :nb_buy_amount,
+      :nb_sell_amount,
       :reward_setting,
       :sell_setting,
       :sell_bitcoin_wallet,
@@ -174,6 +176,8 @@ protected
   def node_params
     params.require(:node).permit(
       :ip,
+      :nb_buy_amount,
+      :nb_sell_amount,
       :reward_setting,
       :sell_setting,
       :sell_bitcoin_wallet,

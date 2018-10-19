@@ -62,13 +62,23 @@ class TransactionManager
   def withdraw(withdrawal)
     account_balance    = withdrawal.balances.find { |b| b["symbol"] == account.symbol }
     balance            = account_balance["value"].to_f
-    fee                = balance * account.crypto.percentage_hosting_fee
+    btc                = account_balance["btc"]
+    usd                = account_balance["usd"]
+    fee_percentage     = (withdrawal.payment_type == 'paypal') ? account.crypto.percentage_hosting_fee * 2 : account.crypto.percentage_hosting_fee
+    fee                = balance * fee_percentage
+    symbol             = account.symbol
 
-    account_txn        = account.transactions.create(amount: balance, withdrawal_id: withdrawal.id, txn_type: 'withdraw', notes: "Account withdrawal of #{balance} #{account.symbol} (includes #{fee} #{account.symbol} fee)")
-    system_fee_txn     = system_account.transactions.create(amount: fee, withdrawal_id: withdrawal.id, txn_type: 'deposit', notes: "Fee deposit (#{fee} #{account.symbol})")
-    system_balance_txn = system_account.transactions.create(amount: balance - fee, withdrawal_id: withdrawal.id, txn_type: 'deposit', notes: "Balance deposit (#{balance - fee} #{account.symbol})")
-    system_account.transactions.create(amount: balance, withdrawal_id: withdrawal.id, txn_type: 'transfer', notes: "#{balance} #{account.symbol} balance transfer to Nodebucks (includes #{fee} #{account.symbol} fee)")
-    system_account.transactions.create(amount: balance - fee, withdrawal_id: withdrawal.id, txn_type: 'transfer', notes: "#{balance - fee} #{account.symbol} transfer to User #{withdrawal.user.email} [##{account.wallet} BTC wallet]")
+    account_txn        = account.transactions.create(amount: balance, cached_crypto_symbol: symbol, withdrawal_id: withdrawal.id, txn_type: 'withdraw', notes: "Account withdrawal of #{balance} #{account.symbol} (includes #{fee} #{account.symbol} fee)")
+    system_fee_txn     = system_account.transactions.create(amount: fee, cached_crypto_symbol: symbol, withdrawal_id: withdrawal.id, txn_type: 'deposit', notes: "Fee deposit (#{fee} #{account.symbol})")
+    system_balance_txn = system_account.transactions.create(amount: balance - fee, cached_crypto_symbol: symbol, withdrawal_id: withdrawal.id, txn_type: 'deposit', notes: "Balance deposit (#{balance - fee} #{account.symbol})")
+    system_account.transactions.create(amount: balance, cached_crypto_symbol: symbol, withdrawal_id: withdrawal.id, txn_type: 'transfer', notes: "#{balance} #{account.symbol} balance transfer to Nodebucks #{account.symbol} wallet")
+    system_account.transactions.create(amount: btc, cached_crypto_symbol: symbol, withdrawal_id: withdrawal.id, txn_type: 'transfer', notes: "#{balance - fee} #{account.symbol} convert to BTC")
+    if (withdrawal.payment_type == 'paypal')
+      system_account.transactions.create(amount: usd, cached_crypto_symbol: 'btc', withdrawal_id: withdrawal.id, txn_type: 'transfer', notes: "#{'%.5f' % btc.to_f.floor(5)} BTC convert to USD")
+      system_account.transactions.create(amount: usd, cached_crypto_symbol: 'usd', withdrawal_id: withdrawal.id, txn_type: 'transfer', notes: "$#{'%.2f' % usd.to_f.floor(2)} USD transfer to #{withdrawal.target}")
+    else # NOTE: assume its 'btc'
+      system_account.transactions.create(amount: btc, cached_crypto_symbol: 'btc', withdrawal_id: withdrawal.id, txn_type: 'transfer', notes: "#{'%.5f' % btc.to_f.floor(5)} BTC transfer to #{withdrawal.target}")
+    end
 
     Account.transaction do
       account.update_attribute(:balance, account.balance - balance)
@@ -82,7 +92,7 @@ class TransactionManager
   def self.withdraw_affiliate_reward(withdrawal)
     user = withdrawal.user
     balance = user.affiliate_balance
-    txn = Transaction.create(amount: balance, withdrawal_id: withdrawal.id, txn_type: 'withdraw', notes: "Affiliate reward withdrawal of $#{balance}")
+    txn = Transaction.create(amount: balance, cached_crypto_symbol: 'usd', withdrawal_id: withdrawal.id, txn_type: 'withdraw', notes: "Affiliate reward withdrawal of $#{balance}")
 
     Account.transaction do
       withdrawal.user.update_attribute(:affiliate_balance, user.affiliate_balance - balance)

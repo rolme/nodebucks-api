@@ -1,7 +1,7 @@
 class CryptoPriceHistory < ApplicationRecord
   belongs_to :crypto
 
-  scope :by_days, ->(n) { where("created_at >= ? AND created_at <= ?", Time.zone.now - n.days, Time.zone.now ) }
+  scope :by_days, ->(n) { where(created_at: n.days.ago..DateTime.current) }
 
   scope :by_timeframe, ->(timeframe) {
     case timeframe
@@ -15,10 +15,12 @@ class CryptoPriceHistory < ApplicationRecord
   }
 
   def self.averages(prices)
+    return [] if prices.blank?
+
     prices.map do |key,value|
       avg_circulating_supply = Utils.average(value.collect { |v| v['circulating_supply']})
       avg_total_supply = Utils.average(value.collect { |v| v['total_supply']})
-      avg_max_supply = Utils.average(value.collect { |v| v['max_supply']})
+      avg_max_supply = Utils.average(value.collect { |v| (!!v['max_supply']) ? v['max_supply'] : 0})
       avg_price_usd = Utils.average(value.collect { |v| v['price_usd']})
       avg_volume_24h = Utils.average(value.collect { |v| v['volume_24h']})
       avg_market_cap = Utils.average(value.collect { |v| v['market_cap']})

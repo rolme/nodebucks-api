@@ -55,9 +55,12 @@ module NodeManager
           ) if !!persist
         else
           crypto_pricer.sell_price(@avg_btc_usdt)
-          coin_price = CryptoPrice.find_by(crypto_id: crypto.id, amount: crypto.stake, price_type: 'sell').usdt
+          crypto_price   = CryptoPrice.find_by(crypto_id: crypto.id, amount: crypto.stake, price_type: 'sell')
+          coin_price     = crypto_price.usdt
+          coin_price_btc = crypto_price.btc
           crypto.update_attributes(
             node_sell_price: calculate_selling_price(crypto, coin_price * crypto.stake),
+            node_sell_price_btc: calculate_selling_price_btc(crypto, coin_price_btc * crypto.stake),
             sellable_price: coin_price * crypto.stake
           ) if !!persist
         end
@@ -101,15 +104,24 @@ module NodeManager
     def calculate_price(crypto, purchasing_price=nil)
       purchasing_price ||= crypto.purchasable_price
       setup_cost         = (purchasing_price * crypto.percentage_setup_fee) + crypto.flat_setup_fee
-      conversion_cost    = purchasing_price * crypto.percentage_conversion_fee
+
+      # Assume double converstion fee for USD to BTC, then BTC to Coin
+      conversion_cost    = purchasing_price * (crypto.percentage_conversion_fee * 2)
 
       purchasing_price + setup_cost + conversion_cost
     end
 
     def calculate_selling_price(crypto, sell_price)
-      decommission_cost  = (sell_price * crypto.percentage_decommission_fee)
-      conversion_cost = sell_price * crypto.percentage_conversion_fee
+      decommission_cost = (sell_price * crypto.percentage_decommission_fee)
+      # Assume double converstion fee for USD to BTC, then BTC to Coin
+      conversion_cost   = sell_price * (crypto.percentage_conversion_fee * 2)
 
+      sell_price - decommission_cost - conversion_cost
+    end
+
+    def calculate_selling_price_btc(crypto, sell_price)
+      decommission_cost = (sell_price * crypto.percentage_decommission_fee)
+      conversion_cost   = sell_price * crypto.percentage_conversion_fee
       sell_price - decommission_cost - conversion_cost
     end
   end

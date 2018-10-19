@@ -57,6 +57,27 @@ class Node < ApplicationRecord
 
   before_create :cache_values
 
+  def total_fees
+    rewards.map(&:fee).reduce(&:+)&.round(5)
+  end
+
+  def total_fees_collected
+    return 0 if rewards.count == 0
+
+    @_transactions ||= Transaction.where(reward_id: rewards.map(&:id))
+    @_transactions.select{ |t| t.status == 'processed' && t.txn_type == 'transfer' }.map(&:amount).reduce(&:+)&.round(5)
+  end
+
+  def buy_profit
+    return 0 if cost.blank?
+    (cost - nb_buy_amount).floor(2)
+  end
+
+  def sell_profit
+    return 0 if sell_price.blank?
+    (sell_price - nb_sell_amount).floor(2)
+  end
+
   def name
     cached_crypto_name
   end
@@ -117,7 +138,7 @@ class Node < ApplicationRecord
   end
 
   def cost_to_cents
-    (cost.round(2) * 100).to_i
+    (cost.floor(2) * 100).to_i
   end
 
   def sell!
