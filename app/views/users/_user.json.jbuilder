@@ -37,3 +37,8 @@ json.zipcode user.zipcode
 json.verified user.verified_at
 json.verificationStatus user.verification_status
 json.verificationImage user.verification_image
+json.affiliates do
+  json.tier1 user.upline(1)
+  json.tier2 user.upline(2)
+  json.tier3 user.upline(3)
+end

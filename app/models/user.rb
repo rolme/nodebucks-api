@@ -33,6 +33,16 @@ class User < ApplicationRecord
     @@_system ||= User.unscoped.find_by(id: SYSTEM_ACCOUNT_ID, email: nil)
   end
 
+  def node_wallet_withdrawals(crypto_id)
+    nodes.select{ |n| n.crypto_id == crypto_id }.map do |node|
+      {
+        balance: node.balance,
+        wallet: node.wallet,
+        url: node.wallet_url
+      }
+    end
+  end
+
   def full_name
     "#{first} #{last}"
   end
@@ -84,7 +94,6 @@ class User < ApplicationRecord
     self.reset_at = nil
   end
 
-
   # TODO: This should be a separate services UserWithdrawal?
   def pending_withdrawal_value(crypto_id)
     pending = withdrawals.select { |w| w.crypto_id == crypto_id && w.status == 'pending' }
@@ -95,7 +104,7 @@ class User < ApplicationRecord
 
   # TODO: This should be a separate services UserWithdrawal?
   def balances
-    Crypto.active.sort_by(&:name).map do |crypto|
+    Crypto.available.active.sort_by(&:name).map do |crypto|
       account = accounts.find { |a| a.crypto_id == crypto.id }
       filtered_nodes = nodes.select{ |n| n.crypto_id == crypto.id && ['online', 'new'].include?(n.status) }
       if account.nil?
@@ -132,14 +141,14 @@ class User < ApplicationRecord
   end
 
   def btc_wallet
-    @btc_wallet ||= accounts.find { |a| a.symbol == 'btc' }.wallet
+    @btc_wallet ||= accounts.find { |a| a.symbol.downcase == 'btc' }.wallet
   end
 
   def total_balance
     btc = 0.0
     usd = 0.0
     accounts.each do |account|
-      next unless account.crypto.withdrawable?
+      next unless account.crypto.withdrawable? && account.crypto.exchanges_available
 
       crypto_pricer = CryptoPricer.new(account.crypto)
       btc += crypto_pricer.to_btc(account.balance, 'sell')
@@ -155,8 +164,8 @@ class User < ApplicationRecord
   end
 
   def create_btc_account
-    account   = accounts.find{ |a| a.symbol == 'btc' }
-    account ||= accounts.create(crypto_id: Crypto.find_by(symbol: 'btc').id)
+    account   = accounts.find{ |a| a.symbol.downcase == 'btc' }
+    account ||= accounts.create(crypto_id: Crypto.find_by(symbol: ['btc', 'BTC']).id)
   end
 
   def set_upline(affiliate_key)
@@ -181,6 +190,16 @@ class User < ApplicationRecord
     when 3; upline_user.upline(2)
     else nil
     end
+  end
+
+  def update_affiliates(tier1_slug)
+    Affiliate.where(affiliate_user_id: id).delete_all
+    set_upline(User.find_by(slug: tier1_slug).affiliate_key)
+  end
+
+  def remove_affiliates
+    Affiliate.where(affiliate_user_id: id).delete_all
+    update_attribute(:upline_user_id, nil)
   end
 
   def generate_token

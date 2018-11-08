@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :reward do
-    node nil
-    timestamp "2018-06-27 10:36:06"
-    hash "MyString"
-    amount "9.99"
+    node
+    timestamp Faker::Date.between(20.days.ago, Date.today)
+    amount Random.rand(1..100)
+    fee Random.rand(1..10)
   end
 end

@@ -21,13 +21,14 @@ class Node < ApplicationRecord
   belongs_to :creator, foreign_key: :created_by_admin_id, class_name: 'User', optional: true
   belongs_to :user
 
+  has_many :orders
   has_many :events, dependent: :destroy
   has_many :node_prices, class_name: "NodePriceHistory", dependent: :destroy
-  has_many :orders, dependent: :destroy
   has_many :rewards, dependent: :destroy
 
 
   delegate :explorer_url,
+           :flat_setup_fee,
            :name,
            :percentage_conversion_fee,
            :percentage_hosting_fee,
@@ -91,7 +92,7 @@ class Node < ApplicationRecord
   end
 
   def value
-    @_value ||= crypto.sellable_price * (1.0 - percentage_conversion_fee)
+    @_value ||= crypto.sellable_price - (crypto.sellable_price * (percentage_conversion_fee * 2))
   end
 
   def uptime

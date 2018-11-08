@@ -53,6 +53,19 @@ module Api
       btc * btc_usdt
     end
 
+    def available?(symbol)
+      nonce     = Api::Kucoin.nonce
+      params    = "limit=1000&symbol=#{symbol.upcase}-BTC"
+      end_point = "/v1/open/orders-#{@type}"
+      response = Typhoeus::Request.get("#{BASE_URI}#{end_point}?#{params}", headers: {
+        'Content-Type' => 'application/json',
+        'KC-API-KEY' => API_KEY,
+        'KC-API-NONCE' => nonce,
+        'KC-API-SIGNATURE' => signature(end_point, nonce, params)
+      }, timeout: 3, verbose: DEBUG)
+      response.code == 200
+    end
+
   private
 
     # Returns Array of Hash [{ price: float, volume: float }, ...]

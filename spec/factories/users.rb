@@ -6,6 +6,12 @@ FactoryBot.define do
     first "First"
     last "Last"
     nickname "Nick"
+
+    factory :user_with_withdrawals do
+      after(:create) do |user|
+        FactoryBot.create_list(:withdrawal, 10, user: user)
+      end
+    end
   end
 
   factory :admin, class: User do

@@ -23,6 +23,9 @@
 
 # production
 /build
+/public/static
+/public/avatars
+/public/ids
 
 # misc
 .DS_Store
@@ -37,6 +40,14 @@ yarn-debug.log*
 yarn-error.log*
 
 /client/stats.html
-*.xml
 .idea/rency.iml
 /config/database_docker.yml
+
+# Rails 5.2 new way handling environment variables
+config/master.key
+/.idea
+/*.lock
+
+# Sitemap, should be generated on server
+/client/public/sitemap.xml
+/public/sitemaps/sitemap.xml

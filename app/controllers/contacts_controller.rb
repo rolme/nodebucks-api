@@ -16,7 +16,7 @@ class ContactsController < ApplicationController
 
   def reviewed
     @contact = Contact.find(params[:contact_id])
-    if @contact.update_attributes(reviewed_by_user: current_user, reviewed_at: Time.zone.now)
+    if @contact.update_attributes(reviewed_by_user: User.find_by(slug: params[:user_slug]).id, reviewed_at: Time.zone.now)
       render json: { status: :ok, message: 'Contact is reviewed successfully.' }
     else
       render json: { status: :error, messages: @contact.errors.full_messages.join(', ') }
