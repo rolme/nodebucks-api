@@ -19,6 +19,7 @@ json.events node.events.sort { |e1, e2| e2.timestamp <=> e1.timestamp }.each do 
   json.value event.value
 end
 json.explorerUrl "#{node.explorer_url}#{node.wallet}"
+json.flatSetupFee node.flat_setup_fee
 json.id node.id + 10000
 json.ip node.ip
 json.isReady node.ready?
@@ -52,7 +53,7 @@ json.totalFeesCollected node.total_fees_collected
 json.uptime node.uptime
 json.wallet node.wallet
 json.withdrawWallet node.withdraw_wallet
-json.value (!!node.sell_price) ? node.value : node.sell_price # TODO: This is a duplicate of json.sellPrice
+json.value (node.sell_price.blank?) ? node.value : node.sell_price # TODO: This is a duplicate of json.sellPrice
 json.values node.node_prices.each do |price|
   json.timestamp price.created_at.to_formatted_s(:db)
   json.value price.value
@@ -61,3 +62,4 @@ json.version node.version
 json.vpsMonthlyCost node.vps_monthly_cost
 json.vpsProvider node.vps_provider
 json.vpsUrl node.vps_url
+json.exchanges_available node.crypto.exchanges_available

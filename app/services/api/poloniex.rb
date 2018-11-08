@@ -30,6 +30,11 @@ module Api
       btc * btc_usdt
     end
 
+    def available?(symbol)
+      response = Typhoeus::Request.get("#{BASE_URI}?command=returnOrderBook&currencyPair=BTC_#{symbol.upcase}&depth=1000", timeout: 3, verbose: DEBUG)
+      response.code == 200
+    end
+
   private
 
     # Returns Array of Hash [{ price: float, volume: float }, ...]

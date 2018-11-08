@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_action :authenticate_request, only: [:balance, :update, :destroy, :referrer, :password_confirmation, :verification_image]
-  before_action :authenticate_admin_request, only: [:disable, :enable, :index, :impersonate, :show]
-  before_action :find_user, only: [:update, :profile]
+  before_action :authenticate_admin_request, only: [:disable, :enable, :index, :impersonate, :show, :update_affiliates, :remove_affiliates]
+  before_action :find_user, only: [:update, :profile, :update_affiliates, :remove_affiliates]
 
   def callback
     @user = nil
@@ -198,6 +198,7 @@ class UsersController < ApplicationController
   def verification_image
     user = User.find_by(slug: params[:user_slug])
     if user.update(verification_image: params[:user][:verification_image], verification_status: :pending)
+      IdVerificationMailer.send_email(user).deliver_later
       render json: { status: :ok, message: 'Photo successfully uploaded.' }
     else
       render json: { status: :error, message: user.errors.full_messages.join(', ') }
@@ -268,6 +269,16 @@ class UsersController < ApplicationController
     else
       render json: { status: :error, message: 'Invalid credentials' }
     end
+  end
+
+  def update_affiliates
+    @user.update_affiliates(params[:tier1_slug])
+    render :show
+  end
+
+  def remove_affiliates
+    @user.remove_affiliates
+    render :show
   end
 
 protected

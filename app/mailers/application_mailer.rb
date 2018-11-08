@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'no-reply@nodebucks.com'
+  default from: 'support@nodebucks.com'
   layout 'mailer'
 end

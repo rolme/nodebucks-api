@@ -65,8 +65,9 @@ module NodeManager
       @order = Order.create(
         node_id: node.id,
         user_id: node.user_id,
-        currency: 'usd',
+        currency: 'USD',
         amount: node.cost,
+        fee: node.flat_setup_fee,
         status: 'unpaid',
         order_type: 'buy',
         payment_method: payment_method,
@@ -100,7 +101,7 @@ module NodeManager
       @order = Order.create(
         node_id: node.id,
         user_id: node.user_id,
-        currency: 'usd',
+        currency: 'USD',
         amount: node.cost,
         status: 'unpaid',
         order_type: 'sold',

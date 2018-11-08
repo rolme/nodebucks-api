@@ -45,7 +45,7 @@ class CryptoPricer
     end
 
     btc = CryptoPrice.find_by(crypto_id: crypto.id, amount: amount, price_type: type).btc * total
-    if crypto.symbol != 'btc'
+    if crypto.symbol != 'BTC'
       btc - (btc * crypto.percentage_conversion_fee)
     else
       btc
@@ -70,7 +70,7 @@ class CryptoPricer
     end
 
     usdt = CryptoPrice.find_by(crypto_id: crypto.id, amount: amount, price_type: type).usdt * total
-    if crypto.symbol != 'btc'
+    if crypto.symbol != 'BTC'
       usdt - (usdt * (crypto.percentage_conversion_fee * 2))
     else
       usdt - (usdt * crypto.percentage_conversion_fee)

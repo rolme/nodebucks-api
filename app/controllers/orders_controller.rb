@@ -1,6 +1,6 @@
 class OrdersController < ApplicationController
   before_action :authenticate_request, only: [:index, :show]
-  before_action :find_order, only: [:paid, :unpaid]
+  before_action :find_order, only: [:paid, :unpaid, :canceled]
 
   def index
     if current_user.admin? && params.has_key?(:all)
@@ -25,6 +25,10 @@ class OrdersController < ApplicationController
 
   def unpaid
     @order.unpaid!
+  end
+
+  def canceled
+    @order.canceled!
   end
 
   private

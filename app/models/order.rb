@@ -34,6 +34,13 @@ class Order < ApplicationRecord
     end
   end
 
+  def canceled!
+    update_attribute(:status, :canceled)
+    if order_type == 'buy'
+      node.delete
+    end
+  end
+
 private
 
   # TODO: need to do this better

@@ -19,8 +19,10 @@ class Crypto < ApplicationRecord
 
   has_many :nodes
   has_many :crypto_price_histories
+  has_many :sell_prices, class_name: "NodeSellPriceHistory", dependent: :destroy
 
   scope :active, -> { where(status: 'active') }
+  scope :available, -> { where(exchanges_available: true) }
 
   # This is run on :before_create as part of Sluggable
   def generate_slug(force=false)
@@ -54,6 +56,10 @@ class Crypto < ApplicationRecord
       percentage: roi(WEEKLY, PERCENTAGE),
       value: roi(WEEKLY, VALUE)
     }
+  end
+
+  def node_sell_price
+    sellable_price - (sellable_price * (percentage_conversion_fee * 2))
   end
 
 private

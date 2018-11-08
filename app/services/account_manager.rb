@@ -12,8 +12,8 @@ class AccountManager
       coins  = coin_balance(crypto)
       prices = pricer.withdrawal(crypto, coins)
       blances[crypto.symbol] = coins
-      blances['btc'] = (blances['btc'].present?) ? blances['btc'] + prices[:btc] : prices[:btc]
-      blances['usd'] = (blances['usd'].present?) ? blances['usd'] + prices[:usd] : prices[:usd]
+      blances['BTC'] = (blances['BTC'].present?) ? blances['BTC'] + prices[:btc] : prices[:btc]
+      blances['USD'] = (blances['USD'].present?) ? blances['USD'] + prices[:usd] : prices[:usd]
     end
     balances
   end

@@ -7,12 +7,12 @@ json.amount do
   json.usd '%.2f' % withdrawal.amount_usd.floor(2)
 end
 json.balances withdrawal.balances.each do |balance|
-  json.btc balance["btc"]
+  json.btc balance["BTC"]
   json.hasNodes balance["has_nodes"]
   json.name balance["name"]
   json.slug balance["slug"]
   json.symbol balance["symbol"]
-  json.usd balance["usd"]
+  json.usd balance["USD"]
   json.value balance["value"]
   json.withdrawable balance["withdrawable"]
 end
