@@ -6,7 +6,7 @@
 # Read more: https://github.com/cyu/rack-cors
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
-  allowed_origins = (ENV['RAILS_ENV'] == 'production') ? 'https://nodebuckshq.com' : '*'
+  allowed_origins = (ENV['RAILS_ENV'] == 'production') ? ['https://nodebucks.com', 'https://nodebuckshq.com'] : '*'
 
   allow do
     origins allowed_origins
