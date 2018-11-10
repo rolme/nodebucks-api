@@ -15,6 +15,7 @@ json.monthlyRoiPercentage masternode.monthly_roi[:percentage]
 json.name masternode.name
 json.nodePrice masternode.node_price
 json.profile masternode.profile
+json.purchasable masternode.purchasable?
 json.purchasableStatus masternode.purchasable_status
 json.slug masternode.slug
 json.symbol masternode.symbol

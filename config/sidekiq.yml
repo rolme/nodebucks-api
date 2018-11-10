@@ -41,3 +41,7 @@ production:
   crypto_price_history_worker:
     cron: '0 * * * *' # Run every hour
     class: CryptoPriceHistoryWorker
+
+  node_sell_price_history_worker:
+    cron: '0 0 * * *' # Run every day at midnight
+    class: NodeSellPriceHistoryWorker

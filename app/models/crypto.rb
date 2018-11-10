@@ -24,6 +24,10 @@ class Crypto < ApplicationRecord
   scope :active, -> { where(status: 'active') }
   scope :available, -> { where(exchanges_available: true) }
 
+  def purchasable?
+    User.system.current_float > node_price
+  end
+
   # This is run on :before_create as part of Sluggable
   def generate_slug(force=false)
     self.slug = name.parameterize if slug.nil? || force

@@ -19,6 +19,7 @@ json.firstRewardDays crypto.first_reward_days
 json.flatSetupFee crypto.flat_setup_fee
 json.price crypto.price
 json.profile crypto.profile
+json.purchasable crypto.purchasable?
 json.purchasableStatus crypto.purchasable_status
 json.nodePrice crypto.node_price
 json.nodeSellPrice crypto.node_sell_price

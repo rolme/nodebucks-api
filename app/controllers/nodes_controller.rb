@@ -134,13 +134,13 @@ class NodesController < ApplicationController
     # TODO: Save PayPal payload as part of purchase
     if operator.purchase(DateTime.current, params[:payment_response])
       SupportMailerService.send_node_purchased_notification(current_user, @node)
+      @node.reload
+
+      # TODO: This is a bit brittle, need to rethink this later
+      # TODO: Only works if purchasing a NEW node
+      ReceiptMailer.send_receipt(current_user, (@node.cost + @node.flat_setup_fee).ceil(2), operator.order.slug).deliver_later
     end
 
-    @node.reload
-
-    # TODO: This is a bit brittle, need to rethink this later
-    # TODO: Only works if purchasing a NEW node
-    ReceiptMailer.send_receipt(current_user, (@node.cost + @node.flat_setup_fee).ceil(2), operator.order.slug).deliver_later
     render :show
   end
 

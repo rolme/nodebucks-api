@@ -33,6 +33,7 @@ class Node < ApplicationRecord
            :percentage_conversion_fee,
            :percentage_hosting_fee,
            :price,
+           :purchasable?,
            :stake,
            :symbol,
            :ticker_url,
