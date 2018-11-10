@@ -96,4 +96,9 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  # config.public_file_server.headers = {
+  #   'Cache-Control' => 'public, max-age=31536000',
+  #   'Expires' => "#{1.year.from_now.to_formatted_s(:rfc822)}"
+  # }
 end

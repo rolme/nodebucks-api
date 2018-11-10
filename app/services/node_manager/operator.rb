@@ -58,7 +58,7 @@ module NodeManager
     end
 
     def purchase(timestamp, paypal_json, payment_method='paypal')
-      return false if node.status != 'reserved' || !within_timeframe?(node.buy_priced_at)
+      return false if node.status != 'reserved' || !within_timeframe?(node.buy_priced_at) || !node.purchasable?
 
       node.update_attribute(:status, 'new')
       node.node_prices.create(source: 'system', value: node.cost)

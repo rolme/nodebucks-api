@@ -18,6 +18,10 @@ class Order < ApplicationRecord
     joins(:user).where("users.slug LIKE ?", user_slug)
   }
 
+  def self.unpaid_amount
+    Order.where(order_type: 'buy').unpaid.sum(:amount)
+  end
+
   def paid!
     update_attribute(:status, :paid)
     if order_type == 'sold' && node.status == 'sold'

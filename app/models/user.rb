@@ -14,6 +14,7 @@ class User < ApplicationRecord
   has_many :nodes, dependent: :destroy
   has_many :orders, dependent: :destroy
   has_many :withdrawals, dependent: :destroy
+  has_many :settings, dependent: :destroy
 
   has_secure_password
 
@@ -41,6 +42,16 @@ class User < ApplicationRecord
         url: node.wallet_url
       }
     end
+  end
+
+  def max_float
+    return 0 if id != User.system.id
+    settings.find { |s| s.key == 'max float' }.value.to_f
+  end
+
+  def current_float
+    return 0 if id != User.system.id
+    max_float - Order.unpaid_amount
   end
 
   def full_name
