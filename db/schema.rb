@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_09_181106) do
+ActiveRecord::Schema.define(version: 2018_11_14_190624) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -300,7 +300,7 @@ ActiveRecord::Schema.define(version: 2018_11_09_181106) do
     t.string "verification_status", default: "none"
     t.string "verification_image"
     t.boolean "reward_notification_on", default: true
-    t.boolean "enabled", default: false
+    t.boolean "enabled", default: true
     t.index ["affiliate_key"], name: "index_users_on_affiliate_key", unique: true
   end
 
