@@ -12,7 +12,7 @@ class AnnouncementsController < ApplicationController
   end
 
   def last
-    @announcement = Announcement.last
+    @announcement ||= Announcement.last
 
     if @announcement.nil?
       render json: { status: :ok, message: 'No announcement to show' }
