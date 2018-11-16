@@ -14,5 +14,11 @@ FactoryBot.define do
       name 'bitcoin'
       status 'active'
     end
+
+    factory :crypto_with_price do
+      after(:create) do |crypto|
+        FactoryBot.create(:crypto_price, crypto: crypto, amount: 10, price_type: 'buy')
+      end
+    end
   end
 end
