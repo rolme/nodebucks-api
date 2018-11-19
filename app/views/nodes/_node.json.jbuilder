@@ -53,7 +53,7 @@ json.totalFeesCollected node.total_fees_collected
 json.uptime node.uptime
 json.wallet node.wallet
 json.withdrawWallet node.withdraw_wallet
-json.value node.value
+json.value node.crypto.node_sell_price
 json.values node.node_prices.each do |price|
   json.timestamp price.created_at.to_formatted_s(:db)
   json.value price.value

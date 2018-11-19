@@ -62,10 +62,6 @@ class Crypto < ApplicationRecord
     }
   end
 
-  def node_sell_price
-    sellable_price - (sellable_price * (percentage_conversion_fee * 2))
-  end
-
 private
 
   def roi(days, format_type=VALUE)
