@@ -12,6 +12,10 @@ FactoryBot.define do
         FactoryBot.create_list(:withdrawal, 10, user: user)
       end
     end
+
+    before(:create) do
+      FactoryBot.create(:bitcoin)
+    end
   end
 
   factory :admin, class: User do

@@ -1,6 +1,6 @@
 class MasternodesController < ApplicationController
   def index
-    @masternodes = Crypto.select(:name, :description, :logo_url, :slug, :price, :url).all
+    @masternodes = Crypto.select(:name, :description, :logo_url, :slug, :price, :url, :first_reward_days).all
   end
 
   def show

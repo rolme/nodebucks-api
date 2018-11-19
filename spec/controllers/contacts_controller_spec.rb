@@ -40,7 +40,6 @@ RSpec.describe ContactsController, type: :controller do
 
   describe "PATCH 'reviewed'" do
     let(:contact) { FactoryBot.create(:contact)}
-    let!(:crypto) { FactoryBot.create(:bitcoin) }
     let(:user) { FactoryBot.create(:user) }
 
     before(:each) do
