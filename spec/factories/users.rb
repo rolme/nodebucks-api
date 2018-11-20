@@ -16,6 +16,10 @@ FactoryBot.define do
     before(:create) do
       FactoryBot.create(:bitcoin)
     end
+
+    trait :skip_validate do
+      to_create {|instance| instance.save(validate: false)}
+    end
   end
 
   factory :admin, class: User do
