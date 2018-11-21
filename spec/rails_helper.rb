@@ -78,9 +78,9 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 end
 
-VCR.configure do |c|
-  #the directory where your cassettes will be saved
-  c.cassette_library_dir = 'spec/vcr'
-  # your HTTP request service. You can also use fakeweb, webmock, and more
-  c.hook_into :typhoeus
-end
+# VCR.configure do |c|
+#   #the directory where your cassettes will be saved
+#   c.cassette_library_dir = 'spec/vcr'
+#   # your HTTP request service. You can also use fakeweb, webmock, and more
+#   c.hook_into :typhoeus
+# end
