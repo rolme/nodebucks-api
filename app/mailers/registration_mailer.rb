@@ -1,6 +1,7 @@
 class RegistrationMailer < ApplicationMailer
   def send_verify_email(user)
     @user = user
+    attachments.inline['email-logo'] = File.read("#{Rails.root}/app/assets/images/email-template-header-logo.png")
     mail(
       :content_type => "text/html",
       :subject => 'You have registered with Nodebucks.com. Please verify your email.',
@@ -19,6 +20,7 @@ class RegistrationMailer < ApplicationMailer
 
   def send_reset_email(user)
     @user = user
+    attachments.inline['email-logo'] = File.read("#{Rails.root}/app/assets/images/email-template-header-logo.png")
     mail(
       :content_type => "text/html",
       :subject => 'You have requested to reset your password.',

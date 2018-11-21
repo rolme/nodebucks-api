@@ -4,6 +4,7 @@ class NodeOwnerMailer < ApplicationMailer
     @user = node.user
 
     if @node.online_mail_sent_at.blank?
+      attachments.inline['email-logo'] = File.read("#{Rails.root}/app/assets/images/email-template-header-logo.png")
       mail(
         :content_type => "text/html",
         :subject => "Your #{@node.name.capitalize} masternode is online.",
@@ -13,7 +14,7 @@ class NodeOwnerMailer < ApplicationMailer
     end
   end
 
-  def reward(reward)
+  def reward(reward) 
     return unless reward.user_notification_setting_on && reward.notification_sent_at.blank?
 
     if !reward.node.user.reward_notification_on
@@ -23,6 +24,7 @@ class NodeOwnerMailer < ApplicationMailer
       @user   = reward.node.user
       @node   = reward.node
       @account_amount = reward.balance.round(5)
+      attachments.inline['email-logo'] = File.read("#{Rails.root}/app/assets/images/email-template-header-logo.png")
       mail(
         :content_type => "text/html",
         :subject => "Your #{reward.node.name.capitalize} masternode has received a reward.",
