@@ -21,7 +21,7 @@ RSpec.describe UsersController, type: :controller do
     end
 
     it "returns a successful 200 response" do
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 end

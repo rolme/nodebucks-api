@@ -9,5 +9,11 @@ FactoryBot.define do
         FactoryBot.create(:bitcoin, withdrawal: withdrawal)
       end
     end
+
+    factory :withdrawal_with_transactions do
+      after(:create) do |withdrawal|
+        FactoryBot.create_list(:transaction, 4, withdrawal: withdrawal)
+      end
+    end
   end
 end

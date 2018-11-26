@@ -25,6 +25,7 @@ class Crypto < ApplicationRecord
   scope :available, -> { where(exchanges_available: true) }
 
   def purchasable?
+    return false if User.system.nil?
     User.system.current_float > node_price
   end
 

@@ -7,7 +7,7 @@ FactoryBot.define do
 
     factory :account_with_nodes do
       after(:create) do |account|
-        FactoryBot.create_list(:node, 2, account: account)
+        FactoryBot.create_list(:node, 2, account: account, status: :new)
       end
     end
   end
