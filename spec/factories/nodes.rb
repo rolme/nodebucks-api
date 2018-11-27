@@ -42,5 +42,9 @@ FactoryBot.define do
     factory :reserved_node do
       status :reserved
     end
+
+    trait :skip_validate do
+      to_create {|instance| instance.save(validate: false)}
+    end
   end
 end 
