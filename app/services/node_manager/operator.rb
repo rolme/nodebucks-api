@@ -20,7 +20,9 @@ module NodeManager
         total_amount: total_amount,
         txhash: txhash,
         usd_value: usd_value,
-        node_reward_setting: node.reward_setting
+        node_reward_setting: node.reward_setting,
+        balance: node.account.balance
+        balance_usd: node.account.balance * node.crypto_price
       )
 
       create_reward_event(reward)

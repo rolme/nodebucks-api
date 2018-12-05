@@ -47,7 +47,17 @@
                   <% elsif @node.reward_setting == Node::REWARD_AUTO_BUILD %>
                     <div style="cursor:auto;color:#000000;font-family:Roboto-Regular, sans-serif;font-size:11px;line-height:22px;text-align:left;"><p><span style="font-size:14px;">Your <%= @node.name.capitalize -%> masternode has just paid you <%= @reward.total_amount.round(5) -%> <%= @node.symbol -%> coins! You are now <%= @node.stake - @account_amount -%> <%= @node.symbol -%> until your next masternode!</span></p></div>
                   <% else %>
-                    <div style="cursor:auto;color:#000000;font-family:Roboto-Regular, sans-serif;font-size:11px;line-height:22px;text-align:left;"><p><span style="font-size:14px;">Your <%= @node.name.capitalize -%> masternode has just paid you <%= @reward.total_amount.round(5) -%> <%= @node.symbol -%> coins! You now have a total of <%= @account_amount -%> <%= @node.symbol -%> coins in your account.</span></p></div>
+                    <div style="cursor:auto;color:#000000;font-family:Roboto-Regular, sans-serif;font-size:11px;line-height:22px;text-align:left;">
+                      <p style="font-size:14px;">Your <%= @node.name.capitalize -%> masternode has just paid you reward!</p>
+                      <p>
+                        <div style="font-size:14px;">Reward Amount: <%= @reward.total_amount.round(5) -%> <%= @node.symbol.upcase -%></div>
+                        <div style="font-size:14px;">Current USD Value: $<%= @reward.usd_value.round(5) -%></div>
+                      </p>
+                      <p>
+                        <div style="font-size:14px;">Current Balance: <%= @account_amount -%> <%= @node.symbol.upcase -%></div>
+                        <div style="font-size:14px;">Value: $<%= @reward.balance_usd.round(5) -%> </div>
+                      </p>
+                    </div>
                   <% end %>
                 </td>
               </tr>
