@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_14_190624) do
+ActiveRecord::Schema.define(version: 2018_12_05_082900) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -229,6 +229,7 @@ ActiveRecord::Schema.define(version: 2018_11_14_190624) do
     t.decimal "balance", default: "0.0"
     t.integer "node_reward_setting", default: 0
     t.boolean "user_notification_setting_on", default: true
+    t.decimal "balance_usd", default: "0.0"
     t.index ["node_id"], name: "index_rewards_on_node_id"
   end
 
