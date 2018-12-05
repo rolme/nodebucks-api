@@ -21,7 +21,7 @@ module NodeManager
         txhash: txhash,
         usd_value: usd_value,
         node_reward_setting: node.reward_setting,
-        balance: node.account.balance
+        balance: node.account.balance,
         balance_usd: node.account.balance * node.crypto_price
       )
 
