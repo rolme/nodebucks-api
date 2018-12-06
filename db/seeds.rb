@@ -103,6 +103,19 @@ if ENV["RAILS_ENV"] != 'production'
   puts "    * put online"
   operator.online(DateTime.current - (3.months - 2.days))
 
+  puts "  - ZCoin node:"
+  crypto = Crypto.find_by(slug: 'zcoin')
+  node   = NodeManager::Builder.new(user, crypto).save(DateTime.current - 3.months)
+  puts "    * purchase for #{user.full_name} at #{node.cost}"
+  operator = NodeManager::Operator.new(node)
+  operator.purchase(DateTime.current - (3.months - 2.days), { source: 'seed' })
+  puts "    * Set IP and wallet"
+  node.ip     = '127.0.0.1'
+  node.wallet = 'aEhhJ4pBcQjb2mp8ZoLXXNBYem1DToyMSk'
+  node.save
+  puts "    * put online"
+  operator.online(DateTime.current - (3.months - 2.days))
+
   puts "Gather rewards"
   NodeRewarder.run
 end

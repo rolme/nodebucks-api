@@ -21,11 +21,11 @@ class TestRewarder
         { total_amount_scraped: @total_amount_scraped, url: @url }
       end
     rescue Watir::Exception
-      browser.quit if Rails.env == 'development'
+      @@browser.quit if Rails.env == 'development'
       { status: :error, message: 'Unable to scrape URL.' }
     rescue
-      browser.quit if Rails.env == 'development'
-      { status: :error, message: 'Unable to find wallet.' }
+      @@browser.quit if Rails.env == 'development'
+      { status: :error, message: 'Something went wrong while scraping!' }
     end
   end
 
