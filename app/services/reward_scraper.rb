@@ -52,8 +52,13 @@ class RewardScraper
 
     zcoin_rows.reverse!.each do |row|
       timestamp = row.find_elements(:class, 'ng-binding')[2].text
-      txhash    = row.find_elements(:class, 'ellipsis')[0].find_elements(tag_name: 'a')[1].text
-      amount    = row.find_elements(:class, 'txvalues-primary')[0].text.split(' ')[0].to_f
+      txhash = row.find_elements(:class, 'ellipsis')[0].find_elements(tag_name: 'a')[1].text
+
+      row.find_elements(:class, 'btn-sm').each do |button|
+        button.click if button.text == 'Show more' && button.displayed?
+      end
+
+      amount = row.find_elements(:css, '.ZCOIN-value.text-success')[0].text.split(' ')[0].to_f
 
       if !test_mode && has_new_rewards?(node, timestamp) && !stake_amount?(node, amount)
         operator.reward(timestamp, amount, txhash)
