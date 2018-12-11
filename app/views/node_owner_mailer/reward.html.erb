@@ -51,11 +51,11 @@
                       <p style="font-size:14px;">Your <%= @node.name.capitalize -%> masternode has just paid you reward!</p>
                       <p>
                         <div style="font-size:14px;">Reward: <%= @reward.total_amount.round(5) -%> <%= @node.symbol.upcase -%></div>
-                        <div style="font-size:14px;">Value: $<%= @reward.usd_value.floor(2) -%></div>
+                        <div style="font-size:14px;">Value: $<%= "%.2f" % @reward.usd_value -%></div>
                       </p>
                       <p>
                         <div style="font-size:14px;">Balance: <%= @account_amount.round(5) -%> <%= @node.symbol.upcase -%></div>
-                        <div style="font-size:14px;">Value: $<%= @reward.balance_usd.floor(2) -%> </div>
+                        <div style="font-size:14px;">Value: $<%= "%.2f" % @reward.balance_usd -%></div>
                       </p>
                     </div>
                   <% end %>
