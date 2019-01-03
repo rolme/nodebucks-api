@@ -5,6 +5,9 @@ Rails.application.routes.draw do
     resources :announcements, only: [:create] do
       get :last, on: :collection
     end
+    resources :contacts, only: [:index, :create] do
+      patch :reviewed
+    end
     resources :cryptos, only: [:index, :show, :update], param: :slug do
       patch :delist
       patch :relist
@@ -12,6 +15,7 @@ Rails.application.routes.draw do
       get :purchasable_statuses, on: :collection
       get :test_reward_scraper
     end
+    resources :masternodes, only: [:index, :show], param: :slug
     resources :nodes, except: [:edit, :new], param: :slug do
       get :sell_prices
       post :generate, on: :collection
@@ -24,11 +28,18 @@ Rails.application.routes.draw do
       patch :sell
       patch :undisburse
     end
-    resources :masternodes, only: [:index, :show], param: :slug
     resources :orders, only: [:index, :show], param: :slug do
       patch :paid
       patch :unpaid
       patch :canceled
+    end
+    resources :rewards, only: [:index]
+    resources :system, only: [:index] do
+      patch :setting, on: :collection
+    end
+    resources :transactions, only: [:index, :update], param: :slug do
+      patch :undo
+      patch :processed
     end
     resources :users, except: [:edit, :new], param: :slug do
       patch :approved
@@ -52,18 +63,8 @@ Rails.application.routes.draw do
       patch :update_affiliates
       patch :remove_affiliates
     end
-    resources :system, only: [:index] do
-      patch :setting, on: :collection
-    end
-    resources :transactions, only: [:index, :update], param: :slug do
-      patch :undo
-      patch :processed
-    end
     resources :withdrawals, only: [:create, :index, :show, :update], param: :slug do
       patch :confirm, on: :collection
-    end
-    resources :contacts, only: [:index, :create] do
-      patch :reviewed
     end
   end
 
